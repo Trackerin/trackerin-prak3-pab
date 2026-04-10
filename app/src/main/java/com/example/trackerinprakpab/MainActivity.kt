@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,14 +51,28 @@ data class UserProfile(
     val major: String,
     val batch: String,
     val description: String,
-    val githubUrl: String
+    val githubUrl: String,
+    val imageRes: Int
 )
 
 val users = listOf(
-    UserProfile("L0124103", "Kevin Ananda Putra", "Informatics", "2024", "just do whatever you want man", "https://github.com/KevinAnandaP"),
-    UserProfile("L0124104", "Majeeda Athaya Nashwanaira Ali", "Informatics", "2024", "just do whatever you want man", "https://github.com/nashwanairaath"),
-    UserProfile("L0124105", "Muhammad Alfin Hasan", "Informatics", "2024", "just do whatever i want man", "https://github.com/malfinh"),
-    UserProfile("L0124117", "Rafif Adyatma Setyawan", "Informatics", "2024", "just do whatever you want man", "https://github.com/rapipapipupp")
+    UserProfile("L0124103", "Kevin Ananda Putra", "Informatics", "2024", "Hi, I'm Kevin!\n" +
+            "\n" +
+            "An Informatics student at UNS '24 currently deep-diving into backend development and VPS infrastructure. Besides my role as Menko Medtek at BEM FATISDA, my main focus right now is building Trackerin, an AI-powered learning platform with my team.\n" +
+            "\n" +
+            "Di luar urusan coding dan teka-teki error yang kadang bikin pusing, I usually unwind by exploring open-world games or just chilling with some Anime series. Always down for a chat about dev-talk, system architecture, or any creative ideas. Let's connect!", "https://github.com/KevinAnandaP", R.drawable.foto_kevin),
+    UserProfile("L0124104", "Majeeda Athaya Nashwanaira Ali", "Informatics", "2024", "Hi, Aku Nashwa ! \uD83D\uDE06\n" +
+            "Mahasiswa Informatika FATISDA UNS yang hobi eksplorasi dan sesekali terjebak dalam teka-teki error saat ngoding. Saat ini sedang fokus mengembangkan Trackerin bersama teman-temanku ^^. Biasanya aku berenang ketika luang atau maraton serial Netflix. Let’s connect and share ideas on dev talk, design, or whatever’s fun to discuss!", "https://github.com/nashwanairaath", R.drawable.foto_majeeda),
+    UserProfile("L0124105", "Muhammad Alfin Hasan", "Informatics", "2024", "Hi, I'm Alfin! \uD83D\uDC4B\n" +
+            "\n" +
+            "Mahasiswa Informatika yang hobi ngulik program error dan sesekali terjebak dalam barisan kode java. Saat ini sedang fokus mengembangkan Trackerin.\n" +
+            "\n" +
+            "Kalau tidak sedang di depan layar, biasanya saya sedang Tidur. Let’s talk about tech, design, or anything in between!", "https://github.com/malfinh", R.drawable.foto_muhammad),
+    UserProfile("L0124117", "Rafif Adyatma Setyawan", "Informatics", "2024", "Hi, I'm Rafif Adyatma Setyawan! \uD83D\uDC4B\uD83D\uDE0B\n" +
+            "\n" +
+            "Mahasiswa Informatika yang hobi ngulik logic dan sesekali \"bertarung\" dengan error di terminal. Saat ini sedang fokus mengeksplorasi dunia pengembangan perangkat lunak dan kecerdasan buatan.\n" +
+            "\n" +
+            "Kalau tidak sedang di depan layar, biasanya saya sedang mencari keringat di lapangan olahraga, mendaki jalur baru di alam, atau berburu kuliner tersembunyi di sudut kota. Let’s talk about tech, travel, or the best food spots!", "https://github.com/rapipapipupp", R.drawable.foto_rafif)
 )
 
 val geistFamily = FontFamily(
@@ -163,6 +178,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                                     putExtra("BATCH", user.batch)
                                     putExtra("DESC", user.description)
                                     putExtra("GITHUB", user.githubUrl)
+                                    putExtra("IMAGE_RES", user.imageRes)
                                 }
                                 context.startActivity(intent)
                             }
@@ -170,7 +186,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.foto_kevin),
+                            painter = painterResource(id = user.imageRes),
                             contentDescription = "Profile Picture",
                             modifier = Modifier
                                 .size(50.dp)
@@ -192,7 +208,9 @@ fun MainScreen(modifier: Modifier = Modifier) {
                                 text = "\"${user.description}\"",
                                 color = grayColor,
                                 fontFamily = geistFamily,
-                                style = MaterialTheme.typography.bodySmall.copy(letterSpacing = (-0.04).em)
+                                style = MaterialTheme.typography.bodySmall.copy(letterSpacing = (-0.04).em),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
 

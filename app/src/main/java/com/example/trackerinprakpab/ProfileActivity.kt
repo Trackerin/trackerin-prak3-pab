@@ -4,14 +4,17 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,6 +42,7 @@ class ProfileActivity : ComponentActivity() {
         val batch = intent.getStringExtra("BATCH") ?: ""
         val desc = intent.getStringExtra("DESC") ?: ""
         val github = intent.getStringExtra("GITHUB") ?: ""
+        val imageRes = intent.getIntExtra("IMAGE_RES", R.drawable.foto_kevin)
 
         setContent {
             TrackerinPrakPabTheme {
@@ -50,6 +54,7 @@ class ProfileActivity : ComponentActivity() {
                         batch = batch,
                         desc = desc,
                         github = github,
+                        imageRes = imageRes,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -60,10 +65,11 @@ class ProfileActivity : ComponentActivity() {
 
 @Composable
 fun ProfileScreen(
-    nim: String, name: String, major: String, batch: String, desc: String, github: String,
+    nim: String, name: String, major: String, batch: String, desc: String, github: String, imageRes: Int,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current as? ComponentActivity
+    val context = LocalContext.current
+    val activity = LocalActivity.current
     val shareInfo = "Name: $name\nNIM: $nim\nMajor: $major\nBatch: $batch\nDescription: $desc"
 
     val textColor = Color(0xFF040E14)
@@ -92,7 +98,7 @@ fun ProfileScreen(
                     .size(24.dp)
                     .align(Alignment.CenterStart)
                     .clickable {
-                        context?.finish()
+                        activity?.finish()
                     }
             )
             Text(
@@ -108,14 +114,16 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 24.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(32.dp))
 
             // Profile Picture
             Image(
-                painter = painterResource(id = R.drawable.foto_kevin),
+                painter = painterResource(id = imageRes),
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .size(160.dp)
@@ -207,7 +215,7 @@ fun ProfileScreen(
                 Button(
                     onClick = {
                         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(github))
-                        context?.startActivity(browserIntent)
+                        context.startActivity(browserIntent)
                     },
                     modifier = Modifier
                         .weight(1f)
@@ -239,7 +247,7 @@ fun ProfileScreen(
                             putExtra(Intent.EXTRA_TEXT, shareInfo)
                             type = "text/plain"
                         }
-                        context?.startActivity(Intent.createChooser(shareIntent, "Share with:"))
+                        context.startActivity(Intent.createChooser(shareIntent, "Share with:"))
                     },
                     modifier = Modifier
                         .weight(1f)
